@@ -85,9 +85,8 @@ function membershipcontrol_civicrm_validateForm($formName, &$fields, &$files, &$
         ->execute()
         ->first();
       if ($activeMembership) {
-        // fail validation
-        // return message
-        $errors['membership'] = ts('There is already an active, recurring membership for this contact.');
+        // If a membership exists, the form's validation should fail, with a message as to why.
+        $errors['email-5'] = ts('There is already an active, recurring membership for the account associated with this email address..');
       }
     }
   }
