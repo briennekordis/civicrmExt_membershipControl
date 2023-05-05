@@ -64,13 +64,32 @@ function membershipcontrol_civicrm_enable(): void {
  * Prevent someone from creating a new membership while an existing recurring membership exists
  */
 function membershipcontrol_civicrm_validateForm($formName, &$fields, &$files, &$form, &$errors) {
-  $temp = 1;
-  if ($form) {
-    // Check for an active membership of one of the recurring types;
-    $activeMembership = TRUE;
-    if ($activeMembership) {
-      // fail validation
-      // return message
+    if ($form->_id === 4) {
+   
+    $loggedInUser = $form->_contactID;
+    if (!$loggedInUser) {
+      $loggedOutUser = \Civi\Api4\Email::get(FALSE)
+        ->addSelect('contact_id')
+        ->addWhere('email', '=', $fields["email-5"])
+        ->execute()
+        ->first()['contact_id'];
+    }
+    $contactId = $loggedInUser ?: $loggedOutUser;
+    if ($contactId) {
+      $activeMembership = \Civi\Api4\Membership::get(FALSE)
+        ->addSelect('id')
+        ->addWhere('contact_id', '=', $contactId)
+        // Check for an active membership (status of 'New', 'Current', or 'Pending') of one of the recurring types;
+        ->addWhere('status_id', 'IN', [1, 2, 5])
+        ->addWhere('membership_type_id', 'IN', [1, 2])
+        ->execute()
+        ->first();
+      if ($activeMembership) {
+        // fail validation
+        // return message
+        $errors['membership'] = ts('There is already an active, recurring membership for this contact.');
+      }
     }
   }
+  return;
 }
