@@ -1,15 +1,13 @@
-# membershipcontrol
+# membershipValidation
 
-![Screenshot](/images/screenshot.png)
-
-(*FIXME: In one or two paragraphs, describe what the extension does and why one would download it. *)
+This CiviCRM extension uses APIv4 calls, first to retrieve the Contact via the form's input and then to the Membership entity, to check if a user has an exisiting, active membership to prevent them from purchasing a new one before the dates of service have expired.
 
 The extension is licensed under [AGPL-3.0](LICENSE.txt).
 
 ## Requirements
 
 * PHP v7.4+
-* CiviCRM (*FIXME: Version number*)
+* CiviCRM : 5.9
 
 ## Installation (Web UI)
 
@@ -47,8 +45,6 @@ cv en membershipcontrol
 
 ## Getting Started
 
-(* FIXME: Where would a new user navigate to get started? What changes would they see? *)
+The `form` on which to load this extension is hard coded by it's id, as is the membership statuses that the API will retrieve. These should be updated within `membershipcontrol.php` to meet the needs of your unique CiviCRM instance.
 
-## Known Issues
-
-(* FIXME *)
+Once those changes are made, enable this extension and the membership validation will be active on your site!
